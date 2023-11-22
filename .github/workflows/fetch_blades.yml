@@ -32,10 +32,13 @@ jobs:
     - name: Commit and push if it's changed
       run: |
         git config --global user.email "subhomoyrchoudhury@gmail.com"
-        git config --global user.name "AI assistant"
+        git config --global user.name "github-actions[bot]"
         git add blades_data.json
         git commit -m "Update blades_data.json" || echo "No changes to commit"
-        git push
 
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: master
+        force: true
