@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         # Install your dependencies here, if any
-        # pip install -r requirements.txt
+        pip install -r requirements.txt
 
     - name: Run script
       run: python main.py --option balde
