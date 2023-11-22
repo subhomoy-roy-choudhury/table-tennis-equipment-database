@@ -69,5 +69,6 @@ def fetch_blades():
                 )
         
         print("Blade scraping Completed Successfully !")
+        return res_blades_list
     else:
         print("Failed to retrieve the webpage")
