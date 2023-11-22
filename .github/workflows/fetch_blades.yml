@@ -1,0 +1,38 @@
+name: Daily Fetch Blades data from https://revspin.net/blade/
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+        - main
+    schedule:
+        - cron: "0 0 * * *"
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # Use the Python version needed
+
+    - name: Install dependencies
+      run: |
+        # Install your dependencies here, if any
+        # pip install -r requirements.txt
+
+    - name: Run script
+      run: python main.py --option balde
+
+    - name: Commit and push if it's changed
+      run: |
+        git config --global user.email "subhomoyrchoudhury@gmail.com"
+        git config --global user.name "AI assistant"
+        git add blades_data.json
+        git commit -m "Update blades_data.json" || echo "No changes to commit"
+        git push
