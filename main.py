@@ -3,7 +3,7 @@ import json
 from crawlers.blades import fetch_blades
 
 def save_data(data):
-    with open('blades_data.json', 'w') as file:
+    with open('data/blades_data.json', 'w') as file:
         json.dump(data, file)
 
 if __name__ == "__main__":
