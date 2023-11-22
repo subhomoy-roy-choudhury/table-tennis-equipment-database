@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-        - main
+        - master
     schedule:
         - cron: "0 0 * * *"
 
@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run script
-      run: python main.py --option balde
+      run: python main.py --option blade
 
     - name: Commit and push if it's changed
       run: |
