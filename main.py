@@ -2,9 +2,11 @@ import argparse
 import json
 from crawlers.blades import fetch_blades
 
+
 def save_data(data):
-    with open('data/blades_data.json', 'w') as file:
-        json.dump(data, file)
+    with open("data/blades_data.json", "w") as file:
+        json.dump(data, file, indent=4)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Example script with arguments")
