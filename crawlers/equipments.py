@@ -3,12 +3,10 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 from crawlers.helpers import format_string
 
-BASE_URL = "https://revspin.net/"
-
 
 class TableTennisEquipments(object):
     def __init__(self) -> None:
-        self.base_url = "https://revspin.net/"
+        self.base_url = "https://revspin.net"
         self.headers = {"User-Agent": "Mozilla/5.0"}
         self.session = requests.Session()
         self.session.headers.update(self.headers)
@@ -40,7 +38,7 @@ class TableTennisEquipments(object):
                 details = {
                     **self.table_details(product_details),
                     "manufacturer_details": self.table_details(manufacturer_details),
-                    "product_image": product_image.get("src", None)
+                    "product_image": f'{self.base_url}{product_image.get("src", None)}'
                     if product_image
                     else None,
                 }
@@ -50,7 +48,7 @@ class TableTennisEquipments(object):
         return details
 
     def fetch_blades(self):
-        url = f"{self.base_url}blade/"
+        url = f"{self.base_url}/blade/"
         response = self.session.get(url, headers=self.headers)
 
         if response.status_code == 200:
@@ -65,7 +63,7 @@ class TableTennisEquipments(object):
 
                 for blade_row in tqdm(blade_rows, desc="Processing"):
                     cells = blade_row.select("td")
-                    url = f'{self.base_url}{cells[0].select_one("a")["href"]}'
+                    url = f'{self.base_url}/{cells[0].select_one("a")["href"]}'
                     blade_details = {
                         "name": cells[0].text.strip(),
                         "url": url,

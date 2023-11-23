@@ -1,6 +1,6 @@
 import argparse
 import json
-from crawlers.blades import TableTennisEquipments
+from crawlers.equipments import TableTennisEquipments
 
 
 def save_data(data):
