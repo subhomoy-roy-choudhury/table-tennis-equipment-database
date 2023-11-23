@@ -1,6 +1,6 @@
 import argparse
 import json
-from crawlers.equipments import TableTennisEquipments
+from crawlers.equipments import RevSpinEquipments, TableTennisReferenceEquipments
 
 
 def save_data(data):
@@ -14,11 +14,16 @@ if __name__ == "__main__":
         "-o", "--option", help="type you want to fetch", default="blades"
     )
     args = parser.parse_args()
-    table_tennis_equipments = TableTennisEquipments()
-
+    revspin_equipments = RevSpinEquipments()
+    tabletennis_reference_equipments = TableTennisReferenceEquipments()
 
     if args.option == "blade":
-        data = table_tennis_equipments.fetch_blades()
+        revspin_data = revspin_equipments.fetch_blades()
+        tabletennis_reference_data = tabletennis_reference_equipments.fetch_blades()
+        data = {
+            "revspin_data": revspin_data,
+            "tabletennis_reference_equipments": tabletennis_reference_data,
+        }
         save_data(data)
     else:
         raise Exception("Option Not Implemented")
