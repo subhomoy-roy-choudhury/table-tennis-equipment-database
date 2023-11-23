@@ -10,100 +10,78 @@ class TableTennisEquipments(object):
     def __init__(self) -> None:
         self.base_url = "https://revspin.net/"
         self.headers = {"User-Agent": "Mozilla/5.0"}
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
 
     def table_details(self, table):
-        result = {}
-        for item in table.find_all("tr"):
-            key = format_string(
-                item.find("td", {"class": "cell_label"}).text.lower()
-            ).replace(" ", "")
-            value = format_string(item.find("td", {"class": "cell_rating"}).text)
-            result[key] = value
-        return result
+        # Assuming format_string is a predefined function
+        key_list = [
+            format_string(key.text.lower()).replace(" ", "")
+            for key in table.find_all("td", {"class": "cell_label"})
+        ]
+        value_list = [
+            format_string(value.text)
+            for value in table.find_all("td", {"class": "cell_rating"})
+        ]
+
+        return dict(zip(key_list, value_list))
 
     def fetch_blade_details(self, url):
-        response = requests.get(url, headers=self.headers, data={})
         details = {}
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, "html.parser")
-            product_details = soup.find("table", {"id": "UserRatingsTable"})
-            manufacturer_details_table = soup.find_all(
-                "table", {"class": "ProductRatingTable"}
-            )[1]
-            product_image_element = soup.find("img", {"class": "product_detail_image"})
-            product_image = (
-                product_image_element.get("src", None)
-                if product_image_element
-                else None
-            )
+        try:
+            response = self.session.get(url)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, "html.parser")
 
-            details = {
-                **self.table_details(product_details),
-                "manufacturer_details": self.table_details(manufacturer_details_table),
-                "product_image": product_image,
-            }
+                product_details = soup.select_one("#UserRatingsTable")
+                manufacturer_details = soup.select(".ProductRatingTable")[1]
+                product_image = soup.select_one(".product_detail_image")
+
+                details = {
+                    **self.table_details(product_details),
+                    "manufacturer_details": self.table_details(manufacturer_details),
+                    "product_image": product_image.get("src", None)
+                    if product_image
+                    else None,
+                }
+        except Exception as e:
+            # Handle exceptions (e.g., network issues, parsing errors)
+            print(f"Error fetching details: {e}")
         return details
 
     def fetch_blades(self):
-        # Create a session object
-        session = requests.Session()
         url = f"{self.base_url}blade/"
-        response = session.request("GET", url, headers=self.headers, data={})
+        response = self.session.get(url, headers=self.headers)
 
-        ## Check if the request was successful
         if response.status_code == 200:
-            res_blades_list = []
             soup = BeautifulSoup(response.content, "html.parser")
-            blades_div_list = soup.find_all(
-                lambda tag: tag.name == "div" and tag.get("id", "").startswith("brand-")
-            )
+            blades_div_list = soup.select("div[id^='brand-']")
+            res_blades_list = []
+
             for blades_div in blades_div_list:
                 brand_name = blades_div["id"]
-                print(f"Scraping Tables Tennis Blade {brand_name.upper()}")
-                for blade_stats_divs in tqdm(
-                    blades_div.find_all(
-                        lambda tag: tag.name == "tr"
-                        and "head" not in tag.get("class", "")
-                    ),
-                    desc="Processing",
-                ):
-                    name = blade_stats_divs.find("td", {"class": "cell_name"}).text
-                    url = f'{self.base_url}{blade_stats_divs.find("td", {"class": "cell_name"}).find("a")["href"]}'
-                    speed = format_string(
-                        blade_stats_divs.find_all("td", {"class": "cell_char"})[0].text
-                    )
-                    control = format_string(
-                        blade_stats_divs.find(
-                            "td", {"class": "cell_char cell_even"}
-                        ).text
-                    )
-                    stiffness = format_string(
-                        blade_stats_divs.find_all("td", {"class": "cell_char"})[2].text
-                    )
-                    overall = blade_stats_divs.find(
-                        "td", {"class": "cell_overall"}
-                    ).text
-                    price = blade_stats_divs.find("td", {"class": "cell_price"}).text
-                    rating = blade_stats_divs.find(
-                        "td", {"class": "cell_numratings"}
-                    ).text
+                print(f"===== Scraping Table Tennis Blade: {brand_name.upper()} =====")
+                blade_rows = blades_div.select("tr:not(.head)")
 
-                    res_blades_list.append(
-                        {
-                            "name": name,
-                            "brand_name": brand_name,
-                            "speed": speed,
-                            "control": control,
-                            "stiffness": stiffness,
-                            "overall": overall,
-                            "price": price,
-                            "rating": rating,
-                            "url": url,
-                            **self.fetch_blade_details(url),
-                        }
-                    )
+                for blade_row in tqdm(blade_rows, desc="Processing"):
+                    cells = blade_row.select("td")
+                    url = f'{self.base_url}{cells[0].select_one("a")["href"]}'
+                    blade_details = {
+                        "name": cells[0].text.strip(),
+                        "url": url,
+                        "speed": format_string(cells[1].text.strip()),
+                        "control": format_string(cells[2].text.strip()),
+                        "stiffness": format_string(cells[3].text.strip()),
+                        "overall": cells[4].text.strip(),
+                        "price": cells[5].text.strip(),
+                        "rating": cells[6].text.strip(),
+                        "brand_name": brand_name,
+                        **self.fetch_blade_details(url),
+                    }
+                    res_blades_list.append(blade_details)
 
             print("Blade scraping Completed Successfully !")
             return res_blades_list
         else:
             print("Failed to retrieve the webpage")
+            return []
