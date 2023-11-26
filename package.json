@@ -1,0 +1,23 @@
+{
+  "name": "table-tennis-equipment-database",
+  "version": "1.0.0",
+  "description": "# Reference ## Github Action Push code issue :- https://github.com/ad-m/github-push-action/issues/96",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/subhomoy-roy-choudhury/table-tennis-equipment-database.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/subhomoy-roy-choudhury/table-tennis-equipment-database/issues"
+  },
+  "homepage": "https://github.com/subhomoy-roy-choudhury/table-tennis-equipment-database#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
