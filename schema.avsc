@@ -1,0 +1,61 @@
+{
+    "type": "Array",
+    "name": "TableTennisBlades",
+    "fields": [
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "url",
+            "type": "string"
+        },
+        {
+            "name": "speed",
+            "type": "string"
+        },
+        {
+            "name": "control",
+            "type": "string"
+        },
+        {
+            "name": "stiffness",
+            "type": "string"
+        },
+        {
+            "name": "overall",
+            "type": "string"
+        },
+        {
+            "name": "price",
+            "type": "string"
+        },
+        {
+            "name": "rating",
+            "type": "string"
+        },
+        {
+            "name": "brand_name",
+            "type": "string"
+        },
+        {
+            "name": "hardness",
+            "type": "string"
+        },
+        {
+            "name": "consistency",
+            "type": "string"
+        },
+        {
+            "name": "manufacturer_details",
+            "type": "Map"
+        },
+        {
+            "name": "product_image",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+    ]
+}
