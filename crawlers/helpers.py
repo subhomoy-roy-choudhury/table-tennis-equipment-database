@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import Levenshtein
@@ -16,6 +17,14 @@ def slugify(text, separator="-"):
     return text
 
 def save_json(filepath, data):
+    # Extract the folder path from the file path
+    folder_path = os.path.dirname(filepath)
+
+    # Check if the folder exists, and create it if it doesn't
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Write the data to the JSON file
     with open(filepath, "w") as file:
         json.dump(data, file, indent=4)
 
