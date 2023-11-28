@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
-from crawlers.helpers import format_string, slugify
+from helpers import format_string, slugify
 
 
 class RevSpinEquipments(object):
@@ -261,7 +261,7 @@ class TableTennisReferenceEquipments(object):
                     for future in futures:
                         res_blades_list.append(future.result())
 
-                page_index += 1
+                page_index += 10
                 pbar.update(1)
 
         return res_blades_list
