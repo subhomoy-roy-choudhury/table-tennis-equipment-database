@@ -6,7 +6,8 @@ on:
     #     branches:
     #     - master
     schedule:
-        - cron: "0 0 * * *"
+        # https://crontab.guru/
+        - cron: "0 0 */3 * *" # At 00:00 on every 3rd day-of-month.
 
 jobs:
   run-python-script:
