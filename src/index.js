@@ -3,7 +3,7 @@ const fs = require('fs');
 const app = require('express')();
 
 // Path to your JSON file
-const jsonFilePath = './data/blades/raw_data.json';
+const jsonFilePath = './data/blades/master_data.json';
 
 // Pagination function
 function paginate(array, pageSize, pageNumber) {
@@ -39,7 +39,7 @@ app.get('/data', (req, res) => {
         try {
             let jsonData = JSON.parse(data);
             // jsonData = filterData(jsonData, filters);
-            const paginatedData = paginate(jsonData["revspin_data"], pageSize, pageNumber);
+            const paginatedData = paginate(jsonData, pageSize, pageNumber);
             res.json(paginatedData);
         } catch (err) {
             res.status(500).send("Error parsing JSON");
