@@ -6,11 +6,6 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["master"]
-  # Runs on completion of `Daily Fetch Blades data`
-  workflow_run:
-    workflows: ["Daily Fetch Blades data"]
-    types:
-      - completed
 
 jobs:
   build:
