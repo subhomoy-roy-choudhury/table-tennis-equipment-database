@@ -1,4 +1,4 @@
-name: Daily Fetch Blades data from https://revspin.net/blade/
+name: Daily Fetch Blades data
 
 on:
     workflow_dispatch:
