@@ -1,40 +1,33 @@
 import sys
+import json
 import argparse
 import avro.schema
 from avro.datafile import DataFileWriter
 from avro.io import DatumWriter
 
 from equipments import RevSpinEquipments, TableTennisReferenceEquipments
-from helpers import merge_sources, save_json, read_json
-    
+from helpers import merge_sources, save_json, read_json, merge_sources_v2
+
+
 def main(option):
     if option == "blade":
-        revspin_data = revspin_equipments.fetch_blades()
-        tabletennis_reference_data = tabletennis_reference_equipments.fetch_blades()
-        raw_data = {
-            "revspin_data": revspin_data,
-            "tabletennis_reference_equipments": tabletennis_reference_data,
-        }
-        save_json(f"data/{option}/raw_data.json", raw_data)
-        
-        master_json = merge_sources(raw_data)
+        # revspin_data = revspin_equipments.fetch_blades()
+        # tabletennis_reference_data = tabletennis_reference_equipments.fetch_blades()
+        # raw_data = {
+        #     "revspin_data": revspin_data,
+        #     "tabletennis_reference_equipments": tabletennis_reference_data,
+        # }
+        # save_json(f"data/{option}/raw_data.json", raw_data)
+
+        raw_data = read_json(f"data/{option}/raw_data.json")
+
+        # master_json = merge_sources(raw_data)
+        master_json = merge_sources_v2(raw_data)
 
         save_json(f"data/{option}/master_data.json", master_json)
 
-        # Load schema
-        # schema = avro.schema.parse(open("schema.avsc", "rb").read())
-        # with open("data/sample_data.json", "r") as file:
-        #     data = json.load(file)
-        #     # Write data in Avro format
-        # with open("data/data.avro", "wb") as file:
-        #     writer = DataFileWriter(file, DatumWriter(), schema)
-        #     for item in data["revspin_data"]:
-        #         writer.append(item)
-        #     writer.close()
-
     else:
         raise Exception("Option Not Implemented")
-
 
 
 if __name__ == "__main__":
@@ -47,5 +40,4 @@ if __name__ == "__main__":
     tabletennis_reference_equipments = TableTennisReferenceEquipments()
     main(args.option)
 
-    
     sys.exit()

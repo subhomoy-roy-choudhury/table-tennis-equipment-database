@@ -3,6 +3,7 @@ import re
 import json
 import Levenshtein
 
+
 def format_string(input_string):
     return input_string.replace("\t", "").replace("\n", "").replace("\r", "")
 
@@ -16,6 +17,7 @@ def slugify(text, separator="-"):
     text = re.sub(r"[^\w-]", "", text)
     return text
 
+
 def save_json(filepath, data):
     # Extract the folder path from the file path
     folder_path = os.path.dirname(filepath)
@@ -27,6 +29,7 @@ def save_json(filepath, data):
     # Write the data to the JSON file
     with open(filepath, "w") as file:
         json.dump(data, file, indent=4)
+
 
 def read_json(filepath):
     with open(filepath, "r") as file:
