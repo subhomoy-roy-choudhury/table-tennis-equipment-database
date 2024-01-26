@@ -1,9 +1,5 @@
 import sys
-import json
 import argparse
-import avro.schema
-from avro.datafile import DataFileWriter
-from avro.io import DatumWriter
 
 from equipments import RevSpinEquipments, TableTennisReferenceEquipments
 from helpers import merge_sources, save_json, read_json, merge_sources_v2
@@ -11,18 +7,15 @@ from helpers import merge_sources, save_json, read_json, merge_sources_v2
 
 def main(option):
     if option == "blade":
-        # revspin_data = revspin_equipments.fetch_blades()
-        # tabletennis_reference_data = tabletennis_reference_equipments.fetch_blades()
-        # raw_data = {
-        #     "revspin_data": revspin_data,
-        #     "tabletennis_reference_equipments": tabletennis_reference_data,
-        # }
-        # save_json(f"data/{option}/raw_data.json", raw_data)
+        revspin_data = revspin_equipments.fetch_blades()
+        tabletennis_reference_data = tabletennis_reference_equipments.fetch_blades()
+        raw_data = {
+            "revspin_data": revspin_data,
+            "tabletennis_reference_equipments": tabletennis_reference_data,
+        }
+        save_json(f"data/{option}/raw_data.json", raw_data)
 
-        raw_data = read_json(f"data/{option}/raw_data.json")
-
-        # master_json = merge_sources(raw_data)
-        master_json = merge_sources_v2(raw_data)
+        master_json = merge_sources(raw_data)
 
         save_json(f"data/{option}/master_data.json", master_json)
 
