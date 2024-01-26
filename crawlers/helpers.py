@@ -33,7 +33,7 @@ def save_json(filepath, data):
 
 def read_json(filepath):
     with open(filepath, "r") as file:
-        data = json.load(file, indent=4)
+        data = json.load(file)
     return data
 
 
@@ -82,3 +82,4 @@ def merge_sources(sources, threshold=0.8):
             merged_products[product_name_slug][source] = product
 
     return merged_products
+

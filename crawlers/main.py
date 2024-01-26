@@ -2,7 +2,8 @@ import sys
 import argparse
 
 from equipments import RevSpinEquipments, TableTennisReferenceEquipments
-from helpers import merge_sources, save_json, read_json, merge_sources_v2
+from helpers import merge_sources, save_json, read_json
+from utils.merge_data_sources import merge_sources_v2
 
 
 def main(option):
@@ -15,7 +16,9 @@ def main(option):
         }
         save_json(f"data/{option}/raw_data.json", raw_data)
 
-        master_json = merge_sources(raw_data)
+        # raw_data = read_json(f"data/{option}/raw_data.json")
+
+        master_json = merge_sources_v2(raw_data)
 
         save_json(f"data/{option}/master_data.json", master_json)
 
