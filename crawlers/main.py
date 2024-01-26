@@ -2,7 +2,7 @@ import sys
 import argparse
 
 from equipments import RevSpinEquipments, TableTennisReferenceEquipments
-from helpers import merge_sources, save_json, read_json
+from helpers import merge_sources, save_json
 
 
 def main(option):
