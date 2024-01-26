@@ -1,5 +1,5 @@
-const fs = require('fs').promises;
-const avro = require('avro-js');
+const fs = require('fs');
+
 const app = require('express')();
 
 // Path to your JSON file
@@ -26,44 +26,25 @@ function filterData(data, filters) {
     });
 }
 
-// Function to read the schema from a file
-async function readSchemaFromFile(filePath) {
-    const data = await fs.readFile(filePath, {});
-    return JSON.parse(data);
-}
+// Endpoint to get paginated and filtered data
+app.get('/data', (req, res) => {
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const pageNumber = parseInt(req.query.pageNumber) || 1;
+    const filters = req.query.filters ? JSON.parse(req.query.filters) : {};
 
-// Function to read and decode Avro data
-async function readAvroData(schema, avroFilePath) {
-    const dataBuffer = await fs.readFile(avroFilePath);
-    const avroType = avro.parse(schema);
-    return avroType.fromBuffer(dataBuffer);
-}
-
-
-app.get('/data', async (req, res) => {
-    try {
-        const pageSize = parseInt(req.query.pageSize, 10) || 10;
-        const pageNumber = parseInt(req.query.pageNumber, 10) || 1;
-        const filters = req.query.filters ? JSON.parse(req.query.filters) : {};
-
-        // const schemaFilePath = 'crawlers/schema.avsc';
-        // const avroFilePath = 'data/data.avro';
-
-        // const schema = await readSchemaFromFile(schemaFilePath);
-        // const data = await readAvroData(schema, avroFilePath);
-
-        const schema = require('./crawlers/schema.avsc');
-        const data = require('data/data.avro');
-        const deserializedData = avro.deserialize(schema, data);
-
-
-        // Implement your pagination and filtering logic here
-        // For now, returning the raw data
-        res.json(data);
-    } catch (err) {
-        console.error('Error:', err);
-        res.status(500).send('Internal Server Error');
-    }
+    fs.readFile(jsonFilePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send("Error reading file");
+        }
+        try {
+            let jsonData = JSON.parse(data);
+            // jsonData = filterData(jsonData, filters);
+            const paginatedData = paginate(jsonData["revspin_data"], pageSize, pageNumber);
+            res.json(paginatedData);
+        } catch (err) {
+            res.status(500).send("Error parsing JSON");
+        }
+    });
 });
 
 const port = process.env.PORT || 8080;
